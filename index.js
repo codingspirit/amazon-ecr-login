@@ -108,6 +108,7 @@ async function run() {
 
       // output the registry URI if this action is doing a single registry login
       if (authTokenResponse.authorizationData.length === 1) {
+        core.setSecret(registryUri);
         core.setOutput(OUTPUTS.registry, registryUri);
       }
 
@@ -132,9 +133,10 @@ async function run() {
       }
 
       // Output docker username and password
-      const secretSuffix = replaceSpecialCharacters(registryUri);
-      core.setOutput(`${OUTPUTS.dockerUsername}_${secretSuffix}`, creds[0]);
-      core.setOutput(`${OUTPUTS.dockerPassword}_${secretSuffix}`, creds[1]);
+      core.setSecret(creds[0]);
+      core.setSecret(creds[1]);
+      core.setOutput(`${OUTPUTS.dockerUsername}`, creds[0]);
+      core.setOutput(`${OUTPUTS.dockerPassword}`, creds[1]);
 
       registryUriState.push(registryUri);
     }
